@@ -1,6 +1,101 @@
 @extends('templates.default')
 @section('content')
 
+    <style type="text/css">
+        .detail-white-card {
+            overflow: hidden;
+            background-color: #fff;
+            border: 1px solid rgba(0,0,0,.1);
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+        }
+        .task-detail-handler-set {
+            display: -moz-box;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -moz-flex;
+            display: -ms-flexbox;
+            display: -ms-flex;
+            display: flex;
+        }
+        .task-detail-handler-set .task-detail-handler.on-flex {
+            min-width: 25%;
+            max-width: 36%;
+            width: inherit;
+            -webkit-box-flex: 0;
+            -moz-box-flex: 0;
+            -webkit-flex: 0 0 auto;
+            -moz-flex: 0 0 auto;
+            -ms-flex: 0 0 auto;
+            flex: 0 0 auto;
+        }
+
+        .task-detail-handler-set .task-detail-handler {
+            position: relative;
+            width: 25%;
+            border-right: 1px solid rgba(0,0,0,.05);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+         .task-detail-handler-set .task-detail-handler:last-child {
+            border-right: 0 none;
+        }
+        .task-detail-handler-set .task-detail-handler {
+            position: relative;
+            width: 25%;
+            border-right: 1px solid rgba(0,0,0,.05);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .task-info-title {
+            margin: 16px 16px 0;
+            line-height: 12px;
+            color: grey;
+            font-family: inherit;
+            font-weight: 500;
+        }
+        .task-detail-executor {
+            margin: 10px 16px 14px;
+            line-height: 24px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .task-detail-handler-body{
+            position: relative;
+            display: block;
+            margin: 12px 16px 16px;
+            color: #383838;
+            vertical-align: middle;
+        }
+        .task-detail-priority {
+            margin-left: 15px!important;
+        }
+
+        .task-detail-handler-set .task-detail-handler .task-detail-handler-body, .task-detail .task-detail-handler-set .task-detail-handler>a, .task-detail .task-detail-handler-set .task-detail-handler>span {
+            position: relative;
+            display: block;
+            margin: 12px 16px 16px;
+            color: #383838;
+            vertical-align: middle;
+        }
+
+        .task-detail-handler-set .task-detail-handler .task-detail-executor {
+            margin: 10px 16px 14px;
+            line-height: 24px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .task-detail-handler-set .task-detail-handler>a.dirty:hover, .task-detail .task-detail-handler-set .task-detail-handler>a.open, .task-detail .task-detail-handler-set .task-detail-handler>a:hover, .task-detail .task-detail-handler-set .task-detail-handler>a:hover .icon {
+            color: #03a9f4;
+        }
+        .task-detail-handler-set a:hover,a:focus{
+            text-decoration: none;
+            color: #03a9f4;
+            cursor:pointer;
+        }
+    </style>
 
 <div class="container">
     <div class="divtab">
@@ -71,7 +166,6 @@
                             aria-hidden="true">×
                     </button>
                     <h4 class="modal-title" id="myModalLabel">
-                        模态框（Modal）标题
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -79,10 +173,39 @@
 
                         <div class="row">
                             <div class="col-xs-1">
-
                             </div>
                             <div class="col-xs-2">
-
+                            </div>
+                        </div>
+                        <div class="detail-white-card task-detail-handler-wrap">
+                            <div class="task-detail-handler-set">
+                                <div class="task-detail-handler on-flex">
+                                    <h6 class="task-info-title" style="margin-bottom: 10px;">执行者</h6>
+                                    <a class="task-detail-executor" >
+                                         <span class="glyphicon glyphicon-user"></span>Zhuang少东 </a>
+                                </div>
+                                <div class="task-detail-handler on-flex">
+                                    <h6 class="task-info-title">截止时间</h6>
+                                    <div class="task-detail-handler-body task-detail-due-date dirty">
+                                        <a class="task-datepicker" id="task-expect">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                            <span>选择截止时间</span> </a>
+                                    </div>
+                                </div>
+                                <div class="task-detail-handler">
+                                    <h6 class="task-info-title">优先级</h6>
+                                    <a class="task-detail-priority dirty" >
+                                        <span class="glyphicon glyphicon-signal"></span>
+                                        <span class="priority-title">普通</span>
+                                    </a>
+                                </div>
+                                <div class="task-detail-handler repeat-menu-wrap">
+                                    <h6 class="task-info-title">重复</h6>
+                                    <a class="task-detail-repeat dirty">
+                                        <span class="icon icon-repeat"></span>
+                                        <span class="repeat-title">不重复</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -95,20 +218,17 @@
                         </div>
                         <div class="form-group">
                             <label for="task-title">截止时间:</label>
-                            <input type="text" class="form-control" id="task-expect" >
+                            <input type="text" class="form-control" id="task-expect1" />
                         </div>
-
-                        按下 ESC 按钮退出。
-
                     </form>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default"
-                            data-dismiss="modal">关闭
+                            data-dismiss="modal">取消
                     </button>
                     <button type="button" class="btn btn-primary">
-                        提交更改
+                        确定
                     </button>
                 </div>
             </div><!-- /.modal-content -->
@@ -146,6 +266,7 @@
                     console.info(data);
                     $('#task-no').val(data.task_no);
                     $('#task-title').val(data.task_title);
+                    $('#myModalLabel').html(data.task_title+"<small> ["+data.task_no+"]</small>");
                     $('#myModal').modal('toggle');
                     //http://v3.bootcss.com/javascript/#modals
                 }

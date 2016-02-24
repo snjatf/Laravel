@@ -19,7 +19,7 @@ class TaskController extends Controller
     public function index()
     {
         //使用的Laravel的blade模版,{{ $var }}会转义html语义的
-        $tasks = DB::table('tasks')->take(10)->get();;
+        $tasks = DB::table('tasks')->take(5)->get();;
         // var_dump($tasks);
         return view('task.main',['name' => 'wank','theme' => 'default','tasks' => $tasks]);
     }
