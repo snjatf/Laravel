@@ -22,13 +22,12 @@ class ProjectTableSeeder extends Seeder {
 
         $project_list_array = json_decode($project_list_json,true);
 
-        print_r($project_list_array);
+        //print_r($project_list_array);
 
         DB::table('projects')->truncate();
 
         foreach($project_list_array as $project)
         {
-            $i = 0;
             Project::create([
                 'name' => $project['project_name'],
                 'path' => $project['project_path']

@@ -15,9 +15,19 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//prefix表示URL前缀
+Route::controllers([
+    'auth' => 'Auth\AuthController',
+    'password' => 'Auth\PasswordController',
+]);
 
-Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function()
+//prefix表示URL前缀
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin','middleware' => 'auth'], function()
+{
+    Route::get('/', 'AdminHomeController@index');
+    Route::resource('pages', 'PagesController');
+});
+
+Route::group(['prefix' => 'home', 'namespace' => 'Admin','middleware' => 'auth'], function()
 {
     Route::get('/', 'AdminHomeController@index');
     Route::resource('pages', 'PagesController');
@@ -35,9 +45,10 @@ Route::group(['prefix' => 'task', 'namespace' => 'Task'], function()
     Route::get('/', 'TaskController@index');
     Route::get('get_details/{id}','TaskController@get_details');
     Route::get('aa','TaskController@aa');
-    Route::post('store', 'TaskController@store');
-    Route::resource('details/{id}', 'TaskController@details');
-    Route::resource('show/{id}','TaskController@show');
+    Route::get('edit/{id}', 'TaskController@edit');
+    Route::post('edit', 'TaskController@edit');
+
+    Route::resource('task', 'TaskController');
 
 });
 

@@ -98,7 +98,7 @@
         .task-detail-handler h6{
             margin-bottom: 10px;
         }
-        #task_expect{
+        #task-expect{
             width: 85px;
             border: none;
             cursor: pointer;
@@ -120,8 +120,6 @@
             width: 95%;
             margin: 0px 0px 0px 14px;
             resize: none;
-            min-height: 90px;
-            margin-top: 5px;
         }
         .activities-timeline>div:first-child, .activities-timeline>ul:first-child {
             border-top: 1px solid rgba(0,0,0,.1);
@@ -185,7 +183,7 @@
         .img-circle {
             border-radius: 50%;
         }
-        .details,.details:hover,select{
+        .details,.details:hover{
             cursor: pointer;
         }
         .details:hover{
@@ -222,14 +220,14 @@
             @foreach($tasks as $task)
             <tr>
                 <td class="@if($task->id%2==0) alert alert-danger @elseif(1==2) class2 @else alert alert-info @endif">{{$task->id}}</td>
-                <td><a href="#" onclick="oprViewOnEKP('{{$task->task_id}}')">{{$task->task_no}}</a></td>
+                <td><a href="#" onclick="oprViewOnEKP({{$task->task_no}})">{{$task->task_no}}</a></td>
                 <td class="details" rel={{$task->id}}>{{$task->task_title}}</td>
                 <td>{{$task->customer_name}}</td>
                 <td>{{$task->abu_pm}}</td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>@if($task->status=1) 待处理 @elseif($task->status=2) 处理中 @else 已完成 @endif</td>
+                <td>{{$task->status}}</td>
                 <td>{{$task->comment}}</td>
             </tr>
             @endforeach
@@ -251,9 +249,8 @@
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{{ URL('task/edit') }}" role="form" id="form_task">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <input type="hidden" name="task_id" id="task_id" value="">
+                    <form method="post" action="{{ URL('task.store') }}" role="form" >
+
                         <div class="row">
                             <div class="col-xs-1">
                             </div>
@@ -265,21 +262,13 @@
                                 <div class="task-detail-handler on-flex">
                                     <h6 class="task-info-title">开发者</h6>
                                     <a class="task-detail-executor" >
-                                        <select name="sel_dev" id="sel_dev">
-                                            <option value="">请选择</option>
-                                            <option value="jijl">季家龙</option>
-                                            <option value="shenjl">沈金龙</option>
-                                            <option value="zhuangsd">庄少东</option>
-                                        </select>
-                                     </a>
+                                         <span class="glyphicon glyphicon-user"></span>Zhuang少东
+                                    </a>
                                 </div>
                                 <div class="task-detail-handler on-flex">
                                     <h6 class="task-info-title">测试</h6>
                                     <a class="task-detail-executor" >
-                                        <select name="sel_test" id="sel_test">
-                                            <option value="">请选择</option>
-                                            <option value="suib">随波</option>
-                                        </select>
+                                        <span class="glyphicon glyphicon-user"></span>傻波
                                     </a>
                                 </div>
                                 <div class="task-detail-handler on-flex">
@@ -287,7 +276,7 @@
                                     <div class="task-detail-handler-body task-detail-due-date dirty">
                                         <a class="task-datepicker">
                                             <span class="glyphicon glyphicon-calendar"></span>
-                                            <input type="text" name="task_expect" id="task_expect" value="" placeholder="选择截止时间"> </a>
+                                            <input type="text" id="task-expect" value="" placeholder="选择截止时间"> </a>
                                     </div>
                                 </div>
                                 {{--<div class="task-detail-handler">--}}
@@ -313,7 +302,7 @@
                             <div class="remark">
                                 {{--<span class="glyphicon glyphicon-comment">添加备忘</span>--}}
                                 <h6 class="task-info-title">添加备忘</h6>
-                                <textarea name="note-input" class="note-input" data-gta="{action: edit note}" placeholder="添加备忘"></textarea>
+                                <textarea class="note-input" data-gta="{action: edit note}" placeholder="添加备忘"></textarea>
                             </div>
                         </div>
                         {{--123--}}
@@ -346,7 +335,7 @@
                     <button type="button" class="btn btn-default"
                             data-dismiss="modal">取消
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="oprEditTask()">
+                    <button type="button" class="btn btn-primary">
                         确定
                     </button>
                 </div>
@@ -363,7 +352,7 @@
                 showOtherMonths: true,
                 selectOtherMonths: true
             });
-            $( "#task_expect" ).datepicker();
+            $( "#task-expect" ).datepicker();
             //tabs
             $('#myTab a').click(function (e) {
               e.preventDefault();
@@ -376,18 +365,17 @@
 
         $('.details').on('click',function(){
             //1.根据ID获取详细（get）
-//            console.info($(this).attr('rel'));
+            console.info($(this).attr('rel'));
+
             $.ajax({
-                 type:'GET',
-                 url:'/task/get_details/'+ $(this).attr('rel'),
+                        type:'GET',
+                        url:'/task/get_details/'+ $(this).attr('rel'),
                 dataType:'json',
                 success:function(data){
                     console.info(data);
                     $('#task-no').val(data.task_no);
                     $('#task-title').val(data.task_title);
-                    $('#myModalLabel').html(data.task_title+"<small> [<a href='#' onclick=oprViewOnEKP("+"'"+data.task_id+"')>"+data.task_no+"</a>]</small>");
-//                    $('#form_task').attr("action",$('#form_task').attr("action")+"/"+data.id)
-                    $("#task_id").val(data.id);
+                    $('#myModalLabel').html(data.task_title+"<small> ["+data.task_no+"]</small>");
                     $('#myModal').modal('toggle');
                     //http://v3.bootcss.com/javascript/#modals
                 }
@@ -405,18 +393,16 @@
         //        标记任务
 
         //打开EKP的任务详情
-        function oprViewOnEKP(taskid)
+        function oprViewOnEKP(taskno)
         {
-            var url="http://pd.mysoft.net.cn/Requirement/Detail.aspx?oid="+taskid;
+            var oid="f79cde61-67a2-4fce-94d1-e0307dac14aa";
+//            alert(taskno);
+            var url="http://pd.mysoft.net.cn/Requirement/Detail.aspx?oid="+oid;
             window.open(url);
+//            window.location.href="http://pd.mysoft.net.cn/Requirement/Detail.aspx?oid="+oid;
         }
         //        打开EKP的任务详情
 
-//        提交任务
-        function oprEditTask()
-        {
-            $("#form_task").submit();
-        }
     </script>
 
 @stop
