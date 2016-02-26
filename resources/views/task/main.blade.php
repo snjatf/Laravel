@@ -201,6 +201,7 @@
            <li><a href="#todo" data-toggle="tab">待处理</a></li>
            <li><a href="#doing" data-toggle="tab">进行中</a></li>
            <li><a href="#done" data-toggle="tab">已完成</a></li>
+           <li><a href="#all" data-toggle="tab">全部</a></li>
         </ul>
     </div>
     <table class="table table-bordered table-hover">
@@ -213,7 +214,7 @@
                 <td>PM</td>
                 <td>开发</td>
                 <td>测试</td>
-                <td>工作量</td>
+                <td>交付时间点</td>
                 <td>状态</td>
                 <td>备注</td>
             </tr>
@@ -226,11 +227,11 @@
                 <td class="details" rel={{$task->id}}>{{$task->task_title}}</td>
                 <td>{{$task->customer_name}}</td>
                 <td>{{$task->abu_pm}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>1</td>
+                <td>2</td>
+                <td>{{$task->task_deadline}}</td>
                 <td>@if($task->status=1) 待处理 @elseif($task->status=2) 处理中 @else 已完成 @endif</td>
-                <td>{{$task->comment}}</td>
+                <td>{{$task->remark}}</td>
             </tr>
             @endforeach
         </tbody>
@@ -283,11 +284,11 @@
                                     </a>
                                 </div>
                                 <div class="task-detail-handler on-flex">
-                                    <h6 class="task-info-title">截止时间</h6>
+                                    <h6 class="task-info-title">交付时间点</h6>
                                     <div class="task-detail-handler-body task-detail-due-date dirty">
                                         <a class="task-datepicker">
                                             <span class="glyphicon glyphicon-calendar"></span>
-                                            <input type="text" name="task_expect" id="task_expect" value="" placeholder="选择截止时间"> </a>
+                                            <input type="text" name="task_deadline" id="task_expect" value="" placeholder="选择截止时间"> </a>
                                     </div>
                                 </div>
                                 {{--<div class="task-detail-handler">--}}
@@ -313,7 +314,7 @@
                             <div class="remark">
                                 {{--<span class="glyphicon glyphicon-comment">添加备忘</span>--}}
                                 <h6 class="task-info-title">添加备忘</h6>
-                                <textarea name="note-input" class="note-input" data-gta="{action: edit note}" placeholder="添加备忘"></textarea>
+                                <textarea name="remark" id="remark" class="note-input" data-gta="{action: edit note}" placeholder="添加备忘"></textarea>
                             </div>
                         </div>
                         {{--123--}}
@@ -361,7 +362,7 @@
 
             var datePicker = $("#ctl00_BodyMain_txtDate").datepicker({
                 showOtherMonths: true,
-                selectOtherMonths: true
+                selectOtherMonths: true,
             });
             $( "#task_expect" ).datepicker();
             //tabs
@@ -383,11 +384,15 @@
                 dataType:'json',
                 success:function(data){
                     console.info(data);
+
                     $('#task-no').val(data.task_no);
                     $('#task-title').val(data.task_title);
                     $('#myModalLabel').html(data.task_title+"<small> [<a href='#' onclick=oprViewOnEKP("+"'"+data.task_id+"')>"+data.task_no+"</a>]</small>");
-//                    $('#form_task').attr("action",$('#form_task').attr("action")+"/"+data.id)
                     $("#task_id").val(data.id);
+                    $("#remark").val(data.comment);
+                    $("#task_expect").val(data.ekp_expect);//截至日期
+
+
                     $('#myModal').modal('toggle');
                     //http://v3.bootcss.com/javascript/#modals
                 }

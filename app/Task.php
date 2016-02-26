@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     //
-    protected $table = 'tb_task';
+    protected $table = 'tasks';
 
-    public function hasManyWorker()
+    public function GetWorkloads()
     {
-        return $this->hasMany('App\Taskload', 'id', 'task_id');
+        return $this->hasMany('App\Taskload', 'task_id', 'id');
     }
 }
