@@ -1,7 +1,7 @@
 @extends('templates.default')
 @section('content')
 
-    <style type="text/css">
+<style type="text/css">
         .detail-white-card {
             overflow: hidden;
             background-color: #fff;
@@ -185,7 +185,7 @@
         .img-circle {
             border-radius: 50%;
         }
-        .details,.details:hover,select{
+        .details,.details:hover,select,.chk_finlish{
             cursor: pointer;
         }
         .details:hover{
@@ -193,53 +193,69 @@
             background-color: #d9edf7;
             border-color: #bce8f1;
         }
-    </style>
+    .chk_finlish{
+        width: 18px;
+        height: 18px;
+    }
 
+    </style>
+{{--{{ HTML::script('/script/task_index.js')}}--}}
 <div class="container">
     <div class="divtab">
         <ul class="nav nav-tabs" id="myTab">
-           <li><a href="#todo" data-toggle="tab">待处理</a></li>
-           <li><a href="#doing" data-toggle="tab">进行中</a></li>
-           <li><a href="#done" data-toggle="tab">已完成</a></li>
-           <li><a href="#all" data-toggle="tab">全部</a></li>
+           <li><a href="#" status="1" data-toggle="tab">待处理</a></li>
+           <li><a href="#" status="2" data-toggle="tab">进行中</a></li>
+           <li><a href="#" status="3" data-toggle="tab">已完成</a></li>
+           <li><a href="#" status="4" data-toggle="tab">全部</a></li>
+           <li><a href="#" status="5" data-toggle="tab">我的待处理</a></li>
         </ul>
     </div>
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <td>#</td>
-                <td width="130px;">任务编号</td>
-                <td>任务标题</td>
-                <td>客户</td>
-                <td>PM</td>
-                <td>开发</td>
-                <td>测试</td>
-                <td>交付时间点</td>
-                <td>状态</td>
-                <td>备注</td>
+                <th title="序号">#</th>
+                {{--<th></th>--}}
+                <th style="min-width: 120px">任务编号</th>
+                <th>任务标题</th>
+                <th>客户</th>
+                <th style="min-width: 60px">PM</th>
+                <th style="min-width: 60px">开发</th>
+                <th style="min-width: 60px">测试</th>
+                <th>交付时间</th>
+                <th>备注</th>
+                <th><span class="glyphicon glyphicon-pencil" title="标记"></span></th>
             </tr>
         </thead>
         <tbody>
-            @foreach($tasks as $task)
+        @for($i=0;$i<count($tasks);$i++)
             <tr>
-                <td class="@if($task->id%2==0) alert alert-danger @elseif(1==2) class2 @else alert alert-info @endif">{{$task->id}}</td>
-                <td><a href="#" onclick="oprViewOnEKP('{{$task->task_id}}')">{{$task->task_no}}</a></td>
-                <td class="details" rel={{$task->id}}>{{$task->task_title}}</td>
-                <td>{{$task->customer_name}}</td>
-                <td>{{$task->abu_pm}}</td>
-                <td>1</td>
-                <td>2</td>
-                <td>{{$task->task_deadline}}</td>
-                <td>@if($task->status=1) 待处理 @elseif($task->status=2) 处理中 @else 已完成 @endif</td>
-                <td>{{$task->remark}}</td>
+                <th scope="row">{{$i+1}}</th>
+                {{--<td style="padding: 5px 10px;"><input class="chk_finlish" type="checkbox" rel="{{$tasks[$i]->task_id}}" title="标记完成"/></td>--}}
+                <td><a href="#" onclick="oprViewOnEKP('{{$tasks[$i]->task_id}}')">{{$tasks[$i]->task_no}}</a></td>
+                <td class="details" rel={{$tasks[$i]->id}}>{{$tasks[$i]->task_title}}</td>
+                <td>{{$tasks[$i]->customer_name}}</td>
+                <td>{{$tasks[$i]->abu_pm}}</td>
+                <td>{{$tasks[$i]->Devors}}</td>
+                <td>{{$tasks[$i]->Testors}}</td>
+                <td>@if($tasks[$i]->ekp_expect) {{substr($tasks[$i]->ekp_expect,0,10)}} @endif</td>
+                <td data-toggle="tooltip" data-placement="top" title="{{$tasks[$i]->comment}}" class="details">
+                    @if(mb_strlen($tasks[$i]->comment)>10) {{mb_substr($tasks[$i]->comment,0,10)}}...@else {{$tasks[$i]->comment}} @endif
+                </td>
+                    <td><span name="chk_finlish" data-toggle="tooltip" data-placement="top" class="glyphicon glyphicon-ok-circle chk_finlish" title="标记" onclick="onMarks('{{$tasks[$i]->id}}')"></span></td>
             </tr>
-            @endforeach
+        @endfor
+        <tr>
+            <td colspan="10">
+                <?php echo '共有: '.$tasks->total().' 条记录,当前页显示: '.$tasks->count().' 条';?>
+            </td>
+        </tr>
         </tbody>
     </table>
     {{--分页--}}
     <?php echo $tasks->render(); ?>
     {{--分页--}}
     <!-- Modal -->
+    <input type="hidden" id="task_status" value="{{$task_status}}">
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
          aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -264,22 +280,24 @@
                         <div class="detail-white-card task-detail-handler-wrap">
                             <div class="task-detail-handler-set">
                                 <div class="task-detail-handler on-flex">
-                                    <h6 class="task-info-title">开发者</h6>
+                                    <h6 class="task-info-title">开发</h6>
                                     <a class="task-detail-executor" >
-                                        <select name="sel_dev" id="sel_dev">
-                                            <option value="">请选择</option>
-                                            <option value="jijl">季家龙</option>
-                                            <option value="shenjl">沈金龙</option>
-                                            <option value="zhuangsd">庄少东</option>
+                                        <input type="hidden" id="sel_dev_name" name="sel_dev_name">
+                                        <select name="sel_dev_id" id="sel_dev">
+                                            {{--<option value="">请选择</option>--}}
+                                            {{--<option value="jijl">季家龙</option>--}}
+                                            {{--<option value="shenjl">沈金龙</option>--}}
+                                            {{--<option value="zhuangsd">庄少东</option>--}}
                                         </select>
                                      </a>
                                 </div>
                                 <div class="task-detail-handler on-flex">
                                     <h6 class="task-info-title">测试</h6>
                                     <a class="task-detail-executor" >
-                                        <select name="sel_test" id="sel_test">
-                                            <option value="">请选择</option>
-                                            <option value="suib">随波</option>
+                                        <input type="hidden" id="sel_test_name" name="sel_test_name">
+                                        <select name="sel_test_id" id="sel_test">
+                                            {{--<option value="">请选择</option>--}}
+                                            {{--<option value="suib">随波</option>--}}
                                         </select>
                                     </a>
                                 </div>
@@ -303,9 +321,14 @@
                                 {{--</div>--}}
                                 <div class="task-detail-handler repeat-menu-wrap">
                                     <h6 class="task-info-title">标记</h6>
-                                    <a class="task-detail-repeat dirty task-detail-priority" href="#" onclick="oprFinlish()">
-                                        <span class="glyphicon glyphicon-flag"></span>
-                                        <span class="repeat-title" >完成</span>
+                                    <a class="task-detail-repeat dirty task-detail-priority" href="#">
+                                        {{--<span class="glyphicon glyphicon-flag"></span>--}}
+                                        <select name="sel_task_status" id="sel_task_status">
+                                            <option value="-1">请选择</option>
+                                            <option value="1">待处理</option>
+                                            <option value="2">进行中</option>
+                                            <option value="3">已完成</option>
+                                        </select>
                                     </a>
                                 </div>
                             </div>
@@ -354,76 +377,188 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-    <script>
+    </div>
+</div>
 
-        $(function() {
-            $.datepicker.regional["zh-CN"] = { closeText: "关闭", prevText: "&#x3c;上月", nextText: "下月&#x3e;", currentText: "今天", monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"], monthNamesShort: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"], dayNames: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"], dayNamesShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"], dayNamesMin: ["日", "一", "二", "三", "四", "五", "六"], weekHeader: "周", dateFormat: "yy-mm-dd", firstDay: 1, isRTL: !1, showMonthAfterYear: !0, yearSuffix: "年" }
-            $.datepicker.setDefaults($.datepicker.regional["zh-CN"]);
 
-            var datePicker = $("#ctl00_BodyMain_txtDate").datepicker({
-                showOtherMonths: true,
-                selectOtherMonths: true,
-            });
-            $( "#task_expect" ).datepicker();
-            //tabs
-            $('#myTab a').click(function (e) {
-              e.preventDefault();
-              $(this).tab('show');
-              // alert($(this).attr("href"));这里实现点击tab切换逻辑
-            });
-            $('#myTab a:first').tab('show') ;
+<script type="text/javascript">
+    $(function() {
+        $.datepicker.regional["zh-CN"] = { closeText: "关闭", prevText: "&#x3c;上月", nextText: "下月&#x3e;", currentText: "今天", monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"], monthNamesShort: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"], dayNames: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"], dayNamesShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"], dayNamesMin: ["日", "一", "二", "三", "四", "五", "六"], weekHeader: "周", dateFormat: "yy-mm-dd", firstDay: 1, isRTL: !1, showMonthAfterYear: !0, yearSuffix: "年" }
+        $.datepicker.setDefaults($.datepicker.regional["zh-CN"]);
 
+        var datePicker = $("#ctl00_BodyMain_txtDate").datepicker({
+            showOtherMonths: true,
+            selectOtherMonths: true,
         });
+        $( "#task_expect" ).datepicker();
 
-        $('.details').on('click',function(){
-            //1.根据ID获取详细（get）
+        //tabs //这里实现点击tab切换逻辑
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            if ($(this).parent().hasClass('active')) return;
+            $('#myTab li').removeClass('active');
+            $(this).parent().addClass('active');
+            $(this).tab('show');
+
+            window.location.href='/task/' + $(this).attr("status");
+        });
+        init();
+    });
+
+    $('.details').on('click',function(){
+        //1.根据ID获取详细（get）
 //            console.info($(this).attr('rel'));
-            $.ajax({
-                 type:'GET',
-                 url:'/task/get_details/'+ $(this).attr('rel'),
-                dataType:'json',
-                success:function(data){
-                    console.info(data);
+        $.ajax({
+            type:'GET',
+            url:'/task/get_details/'+ $(this).attr('rel'),
+            dataType:'json',
+            success:function(data){
+                console.info(data);
 
-                    $('#task-no').val(data.task_no);
-                    $('#task-title').val(data.task_title);
-                    $('#myModalLabel').html(data.task_title+"<small> [<a href='#' onclick=oprViewOnEKP("+"'"+data.task_id+"')>"+data.task_no+"</a>]</small>");
-                    $("#task_id").val(data.id);
-                    $("#remark").val(data.comment);
-                    $("#task_expect").val(data.ekp_expect);//截至日期
-
-
-                    $('#myModal').modal('toggle');
-                    //http://v3.bootcss.com/javascript/#modals
+                $('#task-no').val(data.task.task_no);
+                $('#task-title').val(data.task.task_title);
+                $('#myModalLabel').html(data.task.task_title+"<small> [<a href='#' onclick=oprViewOnEKP("+"'"+data.task.task_id+"')>"+data.task.task_no+"</a>]</small>");
+                $("#task_id").val(data.task.id);
+                $("#remark").val(data.task.comment);
+                var ekp_expect;
+                if(data.task.ekp_expect)
+                {
+                    ekp_expect=data.task.ekp_expect.substr(0,10);
                 }
-            });
-            //2.清理modal缓存，再赋值
-//            $('#myModal').modal('show')
-            //3.绑定保存事件
+                $("#task_expect").val(ekp_expect);//截至日期
+
+                //绑定数据到select
+                var devors= $.grep(data.userlist,function(value,n){
+                    return value.user_type=="开发";
+                });
+                var testors= $.grep(data.userlist,function(value,n){
+                    return value.user_type=="测试";
+                });
+
+                var curdevor= $.grep(data.workload,function(value,n){
+                    return value.work_type=="开发";
+                });
+                var curtestors= $.grep(data.workload,function(value,n){
+                    return value.work_type=="测试";
+                });
+
+                var curdevor_id,curtestor_id;
+                if(curdevor.length>0)
+                {
+                    curdevor_id=curdevor[0].user_id;
+                }
+                if(curtestors.length>0)
+                {
+                    curtestor_id=curtestors[0].user_id;
+                }
+
+                binddata2select('sel_dev',devors,curdevor_id);
+                binddata2select('sel_test',testors,curtestor_id);
+                //绑定数据到select
+
+                if (curdevor_id)
+                {
+                    $("#sel_dev_name").val(curdevor[0].user_name);
+                }
+                if (curtestor_id)
+                {
+                    $("#sel_test_name").val(curtestors[0].user_name);
+                }
+
+                //任务状态
+                $("#sel_task_status option[value='" + data.task.status + "']:eq(0)").attr('selected','selected');
+
+
+                $('#myModal').modal('toggle');
+                //http://v3.bootcss.com/javascript/#modals
+            }
         });
+        //2.清理modal缓存，再赋值
+//            $('#myModal').modal('show')
+        //3.绑定保存事件
 
-        //        标记任务
-        function oprFinlish()
+
+        //绑定下拉框事件
+        $("#sel_dev").change(function(){
+            var name=($(this).children('option:selected').text()!="请选择")?$(this).children('option:selected').text():"";
+            $("#sel_dev_name").val(name);
+        });
+        $("#sel_test").change(function(){
+            var name=($(this).children('option:selected').text()!="请选择")?$(this).children('option:selected').text():"";
+            $("#sel_test_name").val(name);
+        });
+    });
+
+    function init()
+    {
+        var tab_taskstatus=$('#task_status').val();
+        $('#myTab a[status='+tab_taskstatus+']').tab('show');
+        switch(tab_taskstatus)
         {
-            alert("标记完成！");
+            case '1':
+                $('table tr td span[name="chk_finlish"]').attr('title','标记为进行中...');
+                break;
+            case '2':
+                $('table tr td span[name="chk_finlish"]').attr('title','标记为已完成...');
+                break;
+            default:
+                $('table tr td span[name="chk_finlish"]').attr('title','快速标记不能使用...');
+                $('table tr td span[name="chk_finlish"]').attr('onclick','');
+                break;
         }
-        //        标记任务
+    }
 
-        //打开EKP的任务详情
-        function oprViewOnEKP(taskid)
+    //        标记任务
+    function onMarks(id)
+    {
+        $.get(
+                '/task/fast_handle/'+id,
+                function(data){
+                    if (data!='ok')
+                    {
+                        alert('处理失败了,你可以找管理员麻烦喽!');
+                    }else {
+                        window.location.href=window.location.href;
+                    }
+                }
+        );
+    }
+    //        标记任务
+
+    //打开EKP的任务详情
+    function oprViewOnEKP(taskid)
+    {
+        var url="http://pd.mysoft.net.cn/Requirement/Detail.aspx?oid="+taskid;
+        window.open(url);
+    }
+    //        打开EKP的任务详情
+
+    //        提交任务
+    function oprEditTask()
+    {
+        $("#form_task").submit();
+    }
+    //        提交任务
+
+    //        绑定数据到select
+    function binddata2select(selectid,data,defaultkey)
+    {
+        if(selectid==undefined || selectid=="" || data==undefined || data==null || data=="")return;
+        if ($("#" + selectid))
         {
-            var url="http://pd.mysoft.net.cn/Requirement/Detail.aspx?oid="+taskid;
-            window.open(url);
+            var curselect=$("#"+ selectid);
+            var isselected="";
+            curselect.empty();
+            curselect.append("<option value='' selected>请选择</option>");
+            $.each(data,function(n,value)
+            {
+                if(value.key==defaultkey)
+                    isselected="selected";
+                curselect.append("<option value='"+ value.key +"'" + isselected + ">" + value.text + "</option>");
+                isselected="";
+            });
         }
-        //        打开EKP的任务详情
-
-//        提交任务
-        function oprEditTask()
-        {
-            $("#form_task").submit();
-        }
-    </script>
-
+    }
+    //        绑定数据到select
+</script>
 @stop
-
-

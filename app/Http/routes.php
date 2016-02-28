@@ -30,6 +30,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin','middleware' => 'auth'
 Route::group(['prefix' => 'home', 'namespace' => 'Admin','middleware' => 'auth'], function()
 {
     Route::get('/', 'AdminHomeController@index');
+    Route::get('get_user', 'UserController@get_all');
     Route::resource('pages', 'PagesController');
 });
 
@@ -39,13 +40,15 @@ Route::group(['prefix' => 'mywork', 'namespace' => 'Mywork'], function()
     Route::resource('project', 'ProjectController');
 });
 
-Route::group(['prefix' => 'task', 'namespace' => 'Task'], function()
+Route::group(['prefix' => 'task', 'namespace' => 'Task','middleware' => 'auth'], function()
 {
     //get、post等按顺序，按分组些，不能穿插写
-    Route::get('/', 'TaskController@index');
+    Route::get('/{status?}', 'TaskController@index');
     Route::get('get_details/{id}','TaskController@get_details');
-    Route::get('aa','TaskController@aa');
+    Route::get('wonder4/{id}','TaskController@wonder4');
     Route::get('edit/{id}', 'TaskController@edit');
+    Route::get('fast_handle/{id}', 'TaskController@fast_handle');
+
     Route::post('edit', 'TaskController@edit');
 
     Route::resource('task', 'TaskController');

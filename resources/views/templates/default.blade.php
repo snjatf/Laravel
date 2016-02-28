@@ -20,6 +20,11 @@
     <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <![endif]-->
+    <style type="text/css">
+        @media screen and (min-width: 1200px){.mycontainer {width: 95%;}}
+        @media screen and (min-width: 992px){.mycontainer {width: 970px;}}
+        @media screen and (min-width: 768px){} .mycontainer { width: 750px;}}
+    </style>
 </head>
 <body>
     @include('templates.nav')
@@ -32,5 +37,5 @@
 
 
     </div>
-
+    @include('templates.footer')
 </body>

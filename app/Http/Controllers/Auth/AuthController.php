@@ -64,4 +64,5 @@ class AuthController extends Controller
             'user_type'=> $data['user_type'],
         ]);
     }
+
 }
