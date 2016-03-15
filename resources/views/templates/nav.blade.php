@@ -36,6 +36,7 @@
                 <li class="dropdown"><a href="/task/5">我的任务</a></li>
                 <li><a href="#">任务查询</a></li>
                 <li><a href="#">统计报表</a></li>
+                <li><a href="{{URL('solution/')}}">解决方案</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>

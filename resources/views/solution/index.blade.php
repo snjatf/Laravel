@@ -167,25 +167,25 @@
         <div class="panel-heading">
             <ul class="pull-right list-inline remove-margin-bottom topic-filter">
                 <li>
-                    <a href="/solution/topics?filter=recent">
+                    <a href="/solution?filter=recent">
                         <i class="glyphicon glyphicon-time"></i> 最近发表
                     </a>
                     <span class="divider"></span>
                 </li>
                 <li>
-                    <a href="/solution/topics?filter=excellent" class="selected">
+                    <a href="/solution?filter=excellent" class="selected">
                         <i class="glyphicon glyphicon-ok"> </i> 精华主题
                     </a>
                     <span class="divider"></span>
                 </li>
                 <li>
-                    <a href="/solution/topics?filter=vote">
+                    <a href="/solution?filter=vote">
                         <i class="glyphicon glyphicon-thumbs-up"> </i> 最多投票
                     </a>
                     <span class="divider"></span>
                 </li>
                 <li>
-                    <a href="/solution/topics?filter=noreply">
+                    <a href="/solution?filter=noreply">
                         <i class="glyphicon glyphicon-eye-open"></i> 无人问津
                     </a>
                 </li>
@@ -195,44 +195,41 @@
         {{--header end--}}
 
         {{--list content start--}}
-        <div class="panel-body remove-padding-horizontal">
+
+        <div class="panel-body remove-padding-horizontal" style="padding-top: 0;padding-bottom: 0px;">
             <ul class="list-group row topic-list">
+                @foreach($solutions as $k=>$value)
                 <li class="list-group-item media 1" style="margin-top: 0px;">
 
-                    <a class="pull-right" href="https://phphub.org/topics/1825">
-                        <span class="badge badge-reply-count"> 5 </span>
+                    <a class="pull-right" href="#">
+                        <span class="badge badge-reply-count"> {{$value->hit_count}} </span>
                     </a>
 
                     <div class="avatar pull-left">
-                        <a href="https://phphub.org/users/633">
+                        <a href="#">
                             <img class="media-object img-thumbnail avatar" alt="lvht" src="https://dn-phphub.qbox.me/uploads/avatars/633_1439791013.jpeg?imageView2/1/w/80/h/80" style="width:48px;height:48px;">
                         </a>
                     </div>
 
                     <div class="infos">
-
                         <div class="media-heading">
-
-
-                            <a href="https://phphub.org/topics/1825" title="Laravel Eloquent 透明缓存">
-                                Laravel Eloquent 透明缓存
+                            <a href="{{URL('solution/show').'/'.$value->id}}" title="{{$value->solution_title}}">
+                                {{$value->solution_title}}
                             </a>
                         </div>
                         <div class="media-body meta">
-
                             <a href="https://phphub.org/topics/1825" class="remove-padding-left" id="pin-1825">
                                 <span class="glyphicon glyphicon-thumbs-up"> 1 </span>
                             </a>
                             <span> •  </span>
-
-                            <a href="https://phphub.org/nodes/8" title="Laravel" 1="">
-                                Laravel
+                            <a href="#" title="Laravel" 1="">
+                                {{$value->solution_type}}
                             </a>
 
 
                             <span> • </span>最后由
-                            <a href="https://phphub.org/users/569">
-                                nickfan
+                            <a href="#">
+                                {{$value->author_name}}
                             </a>
                             <span> • </span>
                             <span class="timeago">9小时前</span>
@@ -241,56 +238,14 @@
                     </div>
 
                 </li>
-                <li class="list-group-item media 1" style="margin-top: 0px;">
-
-                    <a class="pull-right" href="https://phphub.org/topics/1825">
-                        <span class="badge badge-reply-count"> 5 </span>
-                    </a>
-
-                    <div class="avatar pull-left">
-                        <a href="https://phphub.org/users/633">
-                            <img class="media-object img-thumbnail avatar" alt="lvht" src="https://dn-phphub.qbox.me/uploads/avatars/633_1439791013.jpeg?imageView2/1/w/80/h/80" style="width:48px;height:48px;">
-                        </a>
-                    </div>
-
-                    <div class="infos">
-
-                        <div class="media-heading">
-
-
-                            <a href="https://phphub.org/topics/1825" title="Laravel Eloquent 透明缓存">
-                                Laravel Eloquent 透明缓存
-                            </a>
-                        </div>
-                        <div class="media-body meta">
-
-                            <a href="https://phphub.org/topics/1825" class="remove-padding-left" id="pin-1825">
-                                <span class="glyphicon glyphicon-thumbs-up"> 1 </span>
-                            </a>
-                            <span> •  </span>
-
-                            <a href="https://phphub.org/nodes/8" title="Laravel" 1="">
-                                Laravel
-                            </a>
-
-
-                            <span> • </span>最后由
-                            <a href="https://phphub.org/users/569">
-                                nickfan
-                            </a>
-                            <span> • </span>
-                            <span class="timeago">9小时前</span>
-                        </div>
-
-                    </div>
-
-                </li>
+                @endforeach
             </ul>
         </div>
         {{--list content end--}}
-        @foreach($solutions as $k=>$value)
-            <li rel="{{$k}}" solution_id="{{$value->id}}">{{$value->solution_content}}</li>
-        @endforeach
+
+        {{--分页--}}
+        <?php echo $solutions->render(); ?>
+        {{--分页--}}
 
     </div>
     {{--solutionlist-- start---}}
@@ -298,11 +253,18 @@
         <div class="panel panel-default corner-radius">
             <div class="panel-body text-center">
                 <div class="btn-group">
-                    <a href="#" class="btn btn-success btn-lg">
+                    <a href="{{URL('solution/create')}}" class="btn btn-success btn-lg" target="_blank">
                         <i class="glyphicon glyphicon-pencil"> </i> 发 布 新 帖
                     </a>
                 </div>
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        $(function(){
+
+
+
+        });
+    </script>
 @stop

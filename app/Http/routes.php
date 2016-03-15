@@ -34,13 +34,17 @@ Route::group(['prefix' => 'home', 'namespace' => 'Admin','middleware' => 'auth']
     Route::resource('pages', 'PagesController');
 });
 
-Route::group(['prefix' => 'mywork', 'namespace' => 'Mywork'], function()
+Route::group(['prefix' => 'solution', 'namespace' => 'Solution'], function()
 {
-    Route::get('/', 'ProjectController@index');
-    Route::resource('project', 'ProjectController');
+    Route::get('/', 'SolutionController@index');
+    Route::get('show/{id}', 'SolutionController@show');
+    Route::get('create', 'SolutionController@create');
+    Route::get('mobile/{func?}/{key?}', 'SolutionController@mobile_tools');
+    Route::post('mobile', 'SolutionController@mobile_tools');
+    Route::resource('solution', 'SolutionController');
 });
 
-Route::group(['prefix' => 'task', 'namespace' => 'Task','middleware' => 'auth'], function()
+Route::group(['prefix' => 'task', 'namespace' => 'Task'], function()
 {
     //get、post等按顺序，按分组些，不能穿插写
     Route::get('/{status?}', 'TaskController@index');

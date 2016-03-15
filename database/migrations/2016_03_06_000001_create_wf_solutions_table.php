@@ -31,7 +31,7 @@ class CreateWFSolutionsTable extends Migration
             $table->longText('solution_content');
             $table->string('solution_attach');
             $table->string('solution_label');
-            $table->string('hit_count');
+            $table->integer('hit_count');
             $table->dateTime('publish_time');
             $table->dateTime('LastModifyTime');
             $table->rememberToken();

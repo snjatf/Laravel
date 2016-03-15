@@ -30,12 +30,12 @@
     @include('templates.nav')
     <div class="container">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 @yield('content')
             </div>
         </div>
 
 
     </div>
-    @include('templates.footer')
+    {{--@include('templates.footer')--}}
 </body>
