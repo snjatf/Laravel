@@ -95,7 +95,7 @@ return [
     |
     */
 
-    'log' => 'single',
+    'log' => 'daily',
 
     /*
     |--------------------------------------------------------------------------
@@ -144,9 +144,12 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-//        'Stevenyangecho\UEditor\UEditorServiceProvider',
+        'Stevenyangecho\UEditor\UEditorServiceProvider',
+        'YuanChao\Editor\EndaEditorServiceProvider'
 
     ],
+    //'EndaEditor' => 'YuanChao\Editor\Facade\EndaEditorFacade'`
+
 
     /*
     |--------------------------------------------------------------------------
@@ -194,6 +197,7 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
+        'EndaEditor' => 'YuanChao\Editor\Facade\EndaEditorFacade'
 
     ],
 
