@@ -21,15 +21,23 @@
 <div class="container">
     <form action="{{ URL('solution/markdown_save') }}" method="post">
         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+        <input type="hidden" name="id" value="{{($solution==NULL)?'':$solution->id}}" />
     <div style="text-align: right;margin: 5px 0;">
         <input id="btn_save" class="btn btn-success" type="submit" value="保 存">
     </div>
     <div class="input-group" style="margin-bottom: 5px;">
         <span class="input-group-addon" id="sizing-addon2">标题：</span>
-        <input name="title" type="text" class="form-control" placeholder="标题" aria-describedby="sizing-addon2">
+        <input name="title" type="text" class="form-control" placeholder="标题" aria-describedby="sizing-addon2" value="{{($solution==NULL)?'':$solution->solution_name}}">
+    </div>
+    <div class="input-group" style="margin-bottom: 5px;">
+         <span class="input-group-addon" id="sizing-addon2">分类：</span>
+        <select name="solution_classify" id="solution_classify" style="height: 28px;max-width: 40%;border: 1px solid #ddd;padding: 0 5px;">
+            <option value="mobile">移动问题集</option>
+            <option value="1">PC审批</option>
+        </select>
     </div>
     <div class="editor" style="margin: 2px auto;">
-        <textarea name="content" id='myEditor'></textarea>
+        <textarea name="content" id='myEditor'>{{($solution==NULL)? '':$solution->solution_content}}</textarea>
     </div>
     </form>
 </div>

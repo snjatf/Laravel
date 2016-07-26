@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -18,6 +19,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\InitTask::class,
         \App\Console\Commands\SyncProject::class,
         \App\Console\Commands\SyncTask::class,
+        \App\Console\Commands\SyncCustomer::class
     ];
 
     /**
@@ -28,8 +30,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('inspire')
-                 ->hourly();
-        $schedule->command('command:sync_task')->everyMinute();
+/*        $schedule->command('inspire')
+                 ->hourly();*/
+        $schedule->command('command:sync_task')->everyTenMinutes();
+
+        $schedule->call(function () {
+            Log::info('任务执行记录'.date("Y-m-d H:i:s",strtotime("now")));
+        })->everyFiveMinutes();
     }
 }

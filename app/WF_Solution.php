@@ -8,13 +8,13 @@ use EndaEditor;
 class WF_Solution extends Model
 {
     //
-    protected $table = 'tb_solutions';
+    protected $table = 'wf_solutions';
 
     protected $appends = ['Html'];
 
     public function getHtmlAttribute()
     {
-        return $this->attributes['Html'] =$this->markDecode();
+        return $this->attributes['Html'] =str_replace('>','&gt;',str_replace('<','&lt;',$this->markDecode()));
     }
 
     protected function markDecode()

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
@@ -17,6 +18,10 @@ class ProjectController extends Controller
     public function index()
     {
         //
+        $projects = DB::select('select a.`id`,a.`name`,b.workflow_version,b.erp_version from projects a left join projects2workflow b on a.name = b.project_name where a.source=1 ');
+//        $projects = Workflow::all();
+
+        return view('project.main',['theme' => 'default','projects' => $projects]);
     }
 
     /**

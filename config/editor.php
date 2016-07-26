@@ -2,6 +2,6 @@
 
 return [
     // 宽度
-    'width'=>'100%',
-    'uploadUrl'=>'solution/upload',
+    'width'=>'890px',
+    'uploadUrl'=>'home/upload'
 ];

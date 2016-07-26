@@ -5,7 +5,7 @@
         },
         {
             "type": "composer",
-            "url": "http://packagist.cn"
+            "url": "https://packagist.phpcomposer.com"
         }
     ],
     "name": "laravel/laravel",
@@ -17,8 +17,14 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
 		"twbs/bootstrap": "^3.3",
+		"datatables/datatables": "^1.10",
+		"overtrue/laravel-pinyin": "dev-master",
+		"barryvdh/laravel-ide-helper": "^2.1",
         "yuanchao/laravel-5-markdown-editor": "dev-master",
-        "stevenyangecho/laravel-u-editor": "~1.1"
+		"maatwebsite/excel": "~2.0.0",
+        "FortAwesome/Font-Awesome": "*",
+		"webpatser/laravel-uuid": "2.*",
+		"vsn4ik/bootstrap-checkbox": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -60,5 +66,4 @@
     "config": {
         "preferred-install": "dist"
     }
-
 }
